@@ -1,28 +1,27 @@
 <?php
 if(!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Picture extends CI_Controller{
+class Video extends CI_Controller{
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper(array('form', 'url', 'url_helper'));
-		$this->load->model('picture_model');
-	}
+		$this->load->model('video_model');
+	}	
 	
 	public function index(){
-		$data['pictures'] = $this->picture_model->get_picture();
-		$this->load->view('picture/index', $data);
-		//$this->load->view('picture/upload');
-	}
+		$data['videos'] = $this->video_model->get_video();
+		$this->load->view('video/index', $data);
+	}	
 	
 	public function view($title = NULL){
-		$data['picture_item'] = $this->picture_model->get_picture($title);
+		$data['video_item'] = $this->video_model->get_video($title);
 		
-		if(empty($data['picture_item'])){
+		if(empty($data['video_item'])){
 			show_404();
 		}
 		
-		$this->load->view('picture/view', $data);
-	}
+		$this->load->view('video/view', $data);
+	}	
 	
 	public function add(){
 		$this->load->helper('form');
@@ -44,13 +43,10 @@ class Picture extends CI_Controller{
 		$this->form_validation->set_rules('description', 'description', 'required');
 
 		if($this->form_validation->run() === FALSE){
-			$this->load->view('picture/add');
-		}else{
-			//$this->picture_model->add_picture();
-			
-			
+			$this->load->view('video/add');
+		}else{			
 			if(!$this->upload->do_upload()){   
-				$this->load->view('picture/add');
+				$this->load->view('video/add');
 			} 
 			else
 			{
@@ -64,9 +60,9 @@ class Picture extends CI_Controller{
 					'description' => $this->input->post('description')
 				);
 				
-				$this->picture_model->add_picture($data);
+				$this->video_model->add_video($data);
 
-				redirect(prep_url(site_url('/picture/index')));
+				redirect(prep_url(site_url('/video/index')));
 			}
 		}
 	}
@@ -82,19 +78,19 @@ class Picture extends CI_Controller{
 		$this->form_validation->set_rules('description', 'description', 'required');
 
 		if($this->form_validation->run() === FALSE){
-			$this->load->view('picture/update');
+			$this->load->view('video/update');
 		}else{
-			$this->picture_model->update_picture();
-			redirect(prep_url(site_url('/picture/index')));
+			$this->video_model->update_video();
+			redirect(prep_url(site_url('/video/index')));
 		}
-	}
+	}	
 	
 	public function delete($title = NULL){
 		if($title === NULL){
 			return 'title is null';
 		}else{
-			$this->picture_model->delete_picture($title);
-			redirect(prep_url(site_url('/picture/index')));
+			$this->video_model->delete_video($title);
+			redirect(prep_url(site_url('/video/index')));
 		}
 	}
 	
@@ -109,10 +105,6 @@ class Picture extends CI_Controller{
 		$this->load->library('upload', $config);
 			
 		if(!$this->upload->do_upload()){
-				
-			$error = array('error' => $this->upload->display_errors());
-   
-			$this->load->view('picture/upload', $error);
 		} 
 		else
 		{
@@ -120,12 +112,8 @@ class Picture extends CI_Controller{
 			$error = array('error' => $this->upload->data('full_path'));
    
 			//return $file_path;
-			$this->load->view('picture/upload', $error);
+			$this->load->view('video/upload', $error);
 		}
-	}
-	
-	public function upload(){
-		$this->load->view('picture/upload');
 	}
 }
 ?>
